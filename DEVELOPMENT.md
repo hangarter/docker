@@ -16,8 +16,12 @@ cd docker
 
 Build the base image
 
-```bash
+```bash (Linux)
 docker build base -t base
+```
+
+```bash (MacOS)
+docker build -f base/Dockerfile .  -t base
 ```
 
 Build hub
