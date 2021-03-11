@@ -14,12 +14,15 @@ Change directory to clone directory
 cd docker
 ```
 
-Build the base image
+### Build the base image
+
+#### Linux
 
 ```bash (Linux)
 docker build base -t base
 ```
 
+#### MacOS
 ```bash (MacOS)
 docker build -f base/Dockerfile .  -t base
 ```
