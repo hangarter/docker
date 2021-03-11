@@ -1,46 +1,32 @@
-FROM sickcodes/docker-osx:naked
+FROM sickcodes/docker-osx:latest
 
 # Global dependencies
-# RUN apt-get -q update \
-#  && apt-get -q install -y --no-install-recommends apt-utils \
-#  && apt-get -q install -y --no-install-recommends --allow-downgrades \
-#  ca-certificates \
-#  libasound2 \
-#  libc6-dev \
-#  libcap2 \
-#  libgconf-2-4 \
-#  libglu1 \
-#  libgtk-3-0 \
-#  libncurses5 \
-#  libnss3 \
-#  libxtst6 \
-#  libxss1 \
-#  cpio \
-#  lsb-release \
-#  xvfb \
-#  xz-utils \
-#  && apt-get clean
+# Installs Homebrew
+RUN gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+RUN curl -sSL https://get.rvm.io | bash -s stable --ruby \
+  && source ~/.rvm/scripts/rvm \
+  && rvm use 3.0.0 \
+  && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# # Toolbox
-# RUN apt-get -q update \
-#  && apt-get -q install -y --no-install-recommends --allow-downgrades \
-#  atop \
-#  curl \
-#  git \
-#  git-lfs \
-#  wget \
-#  && git lfs install --system --skip-repo \
-#  && apt-get clean
+# Installs dependencies (toolbox)
+RUN eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" \
+  && brew install git \
+  && brew install git-lfs \
+  && brew install wget \
+  && brew install htop \
+  && git lfs install --system --skip-repo
 
 # Disable default sound card, which removes ALSA warnings
-# ADD config/asound.conf /etc/
+ADD config/asound.conf /etc/
 
 # Support forward compatibility for unity activation
-# RUN echo "576562626572264761624c65526f7578" > /etc/machine-id && mkdir -p /var/lib/dbus/ && ln -sf /etc/machine-id /var/lib/dbus/machine-id
+RUN sudo chmod a+w /etc \
+  && sudo chmod a+w /var/lib/dbus \
+  && echo "576562626572264761624c65526f7578" > /etc/machine-id && mkdir -p /var/lib/dbus/ && ln -sf /etc/machine-id /var/lib/dbus/machine-id
 
 # Used by Unity editor in "modules.json" and must not end with a slash.
-# ENV UNITY_PATH="/opt/unity"
+ENV UNITY_PATH="/opt/unity"
 
 # Fixes a Gradle crash while building for Android on Unity 2019 when there are accented characters in environment variables
-# ENV LANG C.UTF-8
-# ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
