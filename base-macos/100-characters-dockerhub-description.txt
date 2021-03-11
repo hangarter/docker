@@ -1,0 +1,1 @@
+Base MacOS image used to produce hub and editor images.

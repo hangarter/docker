@@ -1,3 +1,5 @@
+Note: This repository is a fork, I'm trying to add support for Windows + MacOS builds
+
 # Docker images for Unity
 
 (Not affiliated with Unity Technologies)
